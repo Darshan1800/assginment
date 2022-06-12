@@ -1,3 +1,6 @@
+
+
+import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import matplotlib.pyplot as plt
@@ -14,13 +17,23 @@ import cv2
 from sklearn.metrics import roc_curve, auc
 
 
-
 path_dir = 'test_set/test_set'
 
-train_datagen = ImageDataGenerator(rescale=(1/255))
-training_set = train_datagen.flow_from_directory(directory = path_dir,target_size=(200,200),
+#train_datagen = ImageDataGenerator(rescale=(1/255.),shear_range = 0.2,zoom_range=0.2,
+                                   #horizontal_flip=True)
+train_datagen = ImageDataGenerator(
+        rescale=(1/255.),
+        rotation_range=30, # rotation
+        width_shift_range=0.2, # horizontal shift
+        height_shift_range=0.2, # vertical shift
+        zoom_range=0.2, # zoom
+        horizontal_flip=True, # horizontal flip
+        brightness_range=[0.2,1.2])
+training_set = train_datagen.flow_from_directory(directory = path_dir,
+                                                 target_size=(224,224),
                                                 batch_size=32,
                                                 class_mode = "binary")
+
 
 fig, ax = plt.subplots(nrows=1, ncols=4, figsize=(15,15))
 x,y= training_set.next()
